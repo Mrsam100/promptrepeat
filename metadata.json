@@ -1,0 +1,5 @@
+{
+  "name": "PromptRepeat",
+  "description": "Universal prompt repetition optimization layer for causal LLMs. Improve accuracy by automatically duplicating or adaptively repeating prompts.",
+  "requestFramePermissions": []
+}

@@ -65,21 +65,9 @@ export default function Home() {
         "-=0.5"
       );
 
-      // Parallax effect for title on scroll
-      gsap.to(".hero-title", {
-        y: 100,
-        scrollTrigger: {
-          trigger: ".hero-content",
-          start: "top top",
-          end: "bottom top",
-          scrub: true
-        }
-      });
-
-      // Scale effect for CTA on scroll
-      gsap.to(".hero-cta", {
-        scale: 1.1,
-        boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
+      // Parallax fade-out for hero on scroll (no position shift)
+      gsap.to(".hero-content", {
+        opacity: 0,
         scrollTrigger: {
           trigger: ".hero-content",
           start: "top top",
@@ -117,7 +105,7 @@ export default function Home() {
       <Navbar />
       
       {/* Hero Section */}
-      <section className="relative pt-48 pb-32 px-6 overflow-hidden">
+      <section className="relative pt-28 pb-32 px-6 overflow-hidden">
         {/* Retro Stripes Background */}
         <div className="absolute top-0 right-0 w-1/3 h-full retro-stripes opacity-10 -skew-x-12 translate-x-1/2 pointer-events-none"></div>
         
@@ -134,7 +122,7 @@ export default function Home() {
                 Recursive Intelligence Layer
               </motion.div>
               
-              <h1 className="hero-title text-7xl md:text-[120px] mb-8 leading-[0.85] tracking-tighter font-display font-medium text-ink">
+              <h1 className="hero-title text-7xl md:text-[120px] mb-12 leading-[0.85] tracking-tighter font-display font-medium text-ink">
                 Repeat <br />
                 <span className="text-primary">to Align.</span>
               </h1>

@@ -1,45 +1,139 @@
 'use client';
 
 import { motion } from 'motion/react';
-import { 
-  Activity, 
-  Zap, 
-  Clock, 
-  TrendingUp,
-  ArrowUpRight,
-  ArrowDownRight,
-  Terminal
+import { useState, useEffect } from 'react';
+import {
+  Zap,
+  Clock,
+  BarChart3,
+  Layers,
+  Terminal,
+  ArrowRight,
+  AlertCircle
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   AreaChart,
   Area
 } from 'recharts';
+import Link from 'next/link';
+import { timeAgo } from '@/lib/utils';
 
-const data = [
-  { name: 'Mon', usage: 2400, accuracy: 85 },
-  { name: 'Tue', usage: 1398, accuracy: 88 },
-  { name: 'Wed', usage: 9800, accuracy: 82 },
-  { name: 'Thu', usage: 3908, accuracy: 91 },
-  { name: 'Fri', usage: 4800, accuracy: 89 },
-  { name: 'Sat', usage: 3800, accuracy: 94 },
-  { name: 'Sun', usage: 4300, accuracy: 92 },
-];
-
-const stats = [
-  { label: 'Total Optimizations', value: '124,592', icon: Zap, trend: '+12.5%', isUp: true },
-  { label: 'Avg. Accuracy Uplift', value: '24.8%', icon: TrendingUp, trend: '+4.2%', isUp: true },
-  { label: 'Avg. Latency', value: '142ms', icon: Clock, trend: '-8ms', isUp: true },
-  { label: 'Active Projects', value: '12', icon: Activity, trend: '0', isUp: false },
-];
+interface StatsData {
+  totalOptimizations: number;
+  avgLatencyMs: number;
+  thisWeekCount: number;
+  mostUsedMode: string;
+  chartData: { name: string; date: string; usage: number; avgLatency: number }[];
+  recent: {
+    id: string;
+    promptText: string | null;
+    repetitionMode: string;
+    latencyMs: number;
+    taskType: string | null;
+    timestamp: string;
+    promptLength: number;
+  }[];
+}
 
 export default function Dashboard() {
+  const [data, setData] = useState<StatsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/dashboard/stats')
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load dashboard data');
+        return res.json();
+      })
+      .then(setData)
+      .catch((err) => setError(err instanceof Error ? err.message : 'Something went wrong'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const stats = data
+    ? [
+        { label: 'Total Optimizations', value: data.totalOptimizations.toLocaleString(), icon: Zap },
+        { label: 'Avg. Latency', value: `${data.avgLatencyMs}ms`, icon: Clock },
+        { label: 'This Week', value: data.thisWeekCount.toLocaleString(), icon: BarChart3 },
+        { label: 'Top Mode', value: data.mostUsedMode, icon: Layers },
+      ]
+    : [];
+
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="p-6 mistral-card shadow-sm animate-pulse">
+              <div className="h-4 bg-black/5 rounded w-1/2 mb-4" />
+              <div className="h-8 bg-black/5 rounded w-2/3" />
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {[1, 2].map((i) => (
+            <div key={i} className="p-8 mistral-card shadow-sm animate-pulse">
+              <div className="h-4 bg-black/5 rounded w-1/3 mb-8" />
+              <div className="h-80 bg-black/5 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col items-center justify-center py-32 text-center"
+      >
+        <div className="w-20 h-20 rounded-2xl bg-retro-red/10 flex items-center justify-center mb-6">
+          <AlertCircle size={32} className="text-retro-red" />
+        </div>
+        <h2 className="text-2xl font-display font-medium text-ink mb-3">Something went wrong</h2>
+        <p className="text-ink/50 mb-8 max-w-md">{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="inline-flex items-center gap-2 bg-ink text-surface px-6 py-3 rounded-xl font-bold hover:bg-primary transition-colors"
+        >
+          Try Again
+        </button>
+      </motion.div>
+    );
+  }
+
+  if (!data || data.totalOptimizations === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col items-center justify-center py-32 text-center"
+      >
+        <div className="w-20 h-20 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+          <Zap size={32} className="text-primary" />
+        </div>
+        <h2 className="text-2xl font-display font-medium text-ink mb-3">No optimizations yet</h2>
+        <p className="text-ink/50 mb-8 max-w-md">Head to the Playground to run your first prompt optimization and see your stats here.</p>
+        <Link
+          href="/dashboard/playground"
+          className="inline-flex items-center gap-2 bg-ink text-surface px-6 py-3 rounded-xl font-bold hover:bg-primary transition-colors"
+        >
+          Go to Playground <ArrowRight size={16} />
+        </Link>
+      </motion.div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Stats Grid */}
@@ -57,10 +151,6 @@ export default function Dashboard() {
                 <div className="p-2 rounded-lg bg-black/5 text-primary border border-black/5">
                   <stat.icon size={20} />
                 </div>
-                <div className={`flex items-center gap-1 text-xs font-bold ${stat.isUp ? 'text-accent' : 'text-ink/40'}`}>
-                  {stat.trend}
-                  {stat.isUp ? <ArrowUpRight size={12} /> : null}
-                </div>
               </div>
               <p className="text-xs font-bold uppercase tracking-widest text-ink/40 mb-1">{stat.label}</p>
               <h3 className="text-3xl font-display font-medium text-ink">{stat.value}</h3>
@@ -76,10 +166,10 @@ export default function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           className="p-8 mistral-card shadow-sm relative overflow-hidden"
         >
-          <h3 className="text-xl font-display font-medium text-ink mb-8 relative z-10">Usage Trends</h3>
+          <h3 className="text-xl font-display font-medium text-ink mb-8 relative z-10">Usage This Week</h3>
           <div className="h-80 w-full relative z-10">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data}>
+              <AreaChart data={data.chartData}>
                 <defs>
                   <linearGradient id="colorUsage" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.2}/>
@@ -88,12 +178,12 @@ export default function Dashboard() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.3)', fontWeight: 'bold' }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.3)', fontWeight: 'bold' }} />
-                <Tooltip 
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.3)', fontWeight: 'bold' }} allowDecimals={false} />
+                <Tooltip
                   contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}
                   itemStyle={{ color: '#1a1a1a' }}
                 />
-                <Area type="monotone" dataKey="usage" stroke="var(--color-primary)" fillOpacity={1} fill="url(#colorUsage)" strokeWidth={2} />
+                <Area type="monotone" dataKey="usage" stroke="var(--color-primary)" fillOpacity={1} fill="url(#colorUsage)" strokeWidth={2} name="Optimizations" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -104,18 +194,18 @@ export default function Dashboard() {
           animate={{ opacity: 1, x: 0 }}
           className="p-8 mistral-card shadow-sm relative overflow-hidden"
         >
-          <h3 className="text-xl font-display font-medium text-ink mb-8 relative z-10">Accuracy Uplift</h3>
+          <h3 className="text-xl font-display font-medium text-ink mb-8 relative z-10">Avg. Latency (ms)</h3>
           <div className="h-80 w-full relative z-10">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data}>
+              <BarChart data={data.chartData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.3)', fontWeight: 'bold' }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'rgba(0,0,0,0.3)', fontWeight: 'bold' }} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}
                   itemStyle={{ color: '#1a1a1a' }}
                 />
-                <Bar dataKey="accuracy" fill="var(--color-accent)" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="avgLatency" fill="var(--color-accent)" radius={[4, 4, 0, 0]} name="Avg Latency (ms)" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -128,29 +218,33 @@ export default function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         className="p-8 mistral-card shadow-sm relative overflow-hidden"
       >
-        <h3 className="text-xl font-display font-medium text-ink mb-8 relative z-10">Recent Optimizations</h3>
+        <div className="flex items-center justify-between mb-8 relative z-10">
+          <h3 className="text-xl font-display font-medium text-ink">Recent Optimizations</h3>
+          <Link href="/dashboard/history" className="text-primary text-xs font-bold uppercase tracking-widest hover:text-ink transition-colors">
+            View All
+          </Link>
+        </div>
         <div className="space-y-4 relative z-10">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex items-center justify-between p-5 rounded-xl hover:bg-black/5 transition-all border border-transparent hover:border-black/5 group">
+          {data.recent.map((item) => (
+            <div key={item.id} className="flex items-center justify-between p-5 rounded-xl hover:bg-black/5 transition-all border border-transparent hover:border-black/5 group">
               <div className="flex items-center gap-5">
                 <div className="w-12 h-12 rounded-xl bg-black/5 text-primary flex items-center justify-center border border-black/5 group-hover:scale-110 transition-transform">
                   <Terminal size={20} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-ink">Customer Support Classification</p>
-                  <p className="text-xs text-ink/40 font-medium">Mode: Adaptive • 2 mins ago</p>
+                  <p className="text-sm font-bold text-ink">
+                    {item.promptText ? (item.promptText.length > 60 ? item.promptText.substring(0, 60) + '...' : item.promptText) : `Prompt (${item.promptLength} chars)`}
+                  </p>
+                  <p className="text-xs text-ink/40 font-medium">
+                    Mode: {item.repetitionMode}{item.taskType ? ` \u2022 ${item.taskType}` : ''} \u2022 {timeAgo(item.timestamp)}
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-12">
+              <div className="flex items-center gap-8">
                 <div className="text-right">
-                  <p className="text-sm font-bold text-accent">+22%</p>
-                  <p className="text-[10px] uppercase tracking-widest text-ink/40 font-bold">Accuracy</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-ink">142ms</p>
+                  <p className="text-sm font-bold text-ink">{item.latencyMs}ms</p>
                   <p className="text-[10px] uppercase tracking-widest text-ink/40 font-bold">Latency</p>
                 </div>
-                <button className="text-primary text-xs font-bold uppercase tracking-widest hover:text-ink transition-colors">View</button>
               </div>
             </div>
           ))}

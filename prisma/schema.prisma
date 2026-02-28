@@ -66,17 +66,25 @@ enum Role {
 model Usage {
   id              String   @id @default(cuid())
   userId          String
-  user            User     @relation(fields: [userId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   promptLength    Int
   repetitionMode  String
   latencyMs       Int
   timestamp       DateTime @default(now())
+  promptText      String?  @db.Text
+  optimizedText   String?  @db.Text
+  outputText      String?  @db.Text
+  taskType        String?
+  confidenceScore Float?
+
+  @@index([userId])
+  @@index([userId, timestamp])
 }
 
 model Subscription {
   id        String   @id @default(cuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   plan      Plan     @default(FREE)
   status    String
   stripeId  String?  @unique

@@ -2,13 +2,34 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/lib/prisma";
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, password } = await req.json();
+    let body: Record<string, unknown>;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { error: "Invalid request body" },
+        { status: 400 }
+      );
+    }
 
-    if (!email || !password) {
+    const { name, email, password } = body;
+
+    if (!email || typeof email !== "string" || !password || typeof password !== "string") {
       return NextResponse.json(
         { error: "Email and password are required" },
+        { status: 400 }
+      );
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!EMAIL_REGEX.test(normalizedEmail)) {
+      return NextResponse.json(
+        { error: "Please enter a valid email address" },
         { status: 400 }
       );
     }
@@ -20,8 +41,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    if (password.length > 128) {
+      return NextResponse.json(
+        { error: "Password must be 128 characters or fewer" },
+        { status: 400 }
+      );
+    }
+
+    const sanitizedName = typeof name === "string" ? name.trim().substring(0, 100) : null;
+
     const existing = await prisma.user.findUnique({
-      where: { email },
+      where: { email: normalizedEmail },
     });
 
     if (existing) {
@@ -35,8 +65,8 @@ export async function POST(req: NextRequest) {
 
     await prisma.user.create({
       data: {
-        name: name || null,
-        email,
+        name: sanitizedName || null,
+        email: normalizedEmail,
         password: hashedPassword,
       },
     });

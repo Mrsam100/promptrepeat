@@ -33,7 +33,7 @@ export default function Playground() {
   const [error, setError] = useState('');
 
   const handleOptimize = async () => {
-    if (!prompt) return;
+    if (!prompt.trim()) return;
     setIsLoading(true);
     setError('');
     try {
@@ -68,8 +68,21 @@ export default function Playground() {
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+  const MAX_PROMPT_LENGTH = 50000;
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -94,9 +107,15 @@ export default function Playground() {
             <textarea
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
+              maxLength={MAX_PROMPT_LENGTH}
               placeholder="Enter your prompt here... Use [[text]] for selective repetition."
               className="flex-grow w-full p-6 rounded-2xl bg-black/5 border border-black/5 focus:outline-none focus:ring-2 focus:ring-primary/40 transition-all resize-none font-body text-base text-ink/80 placeholder:text-ink/20"
             />
+            {prompt.length > 0 && (
+              <p className={`text-[10px] font-bold uppercase tracking-widest mt-2 text-right ${prompt.length > MAX_PROMPT_LENGTH * 0.9 ? 'text-retro-red' : 'text-ink/20'}`}>
+                {prompt.length.toLocaleString()} / {MAX_PROMPT_LENGTH.toLocaleString()}
+              </p>
+            )}
 
             <div className="mt-8 space-y-6">
               <div>
@@ -215,7 +234,7 @@ export default function Playground() {
 
               <button
                 onClick={handleOptimize}
-                disabled={isLoading || !prompt}
+                disabled={isLoading || !prompt.trim()}
                 className="w-full py-5 rounded-xl bg-ink text-surface font-bold uppercase tracking-[0.2em] text-xs hover:bg-primary hover:text-white transition-all shadow-sm flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed group"
               >
                 {isLoading ? <RefreshCw size={20} className="animate-spin" /> : <Sparkles size={20} className="group-hover:rotate-12 transition-transform" />}

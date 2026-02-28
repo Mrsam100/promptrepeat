@@ -4,8 +4,14 @@ import type { RepetitionMode, OptimizationOptions, OptimizationResult, Execution
 // Re-export types for backward compatibility
 export type { RepetitionMode, OptimizationOptions, OptimizationResult, ExecutionResult } from "./types";
 
+const ALLOWED_MODELS = ['gemini-3-flash-preview', 'gemini-3.1-pro-preview'];
+
 function getAI() {
-  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY environment variable is not configured");
+  }
+  return new GoogleGenAI({ apiKey });
 }
 
 export class PromptEngine {
@@ -37,7 +43,7 @@ export class PromptEngine {
         model: 'gemini-3-flash-preview',
         contents: `Analyze the user's intent in this prompt and expand it with necessary context, constraints, and implicit goals to ensure the LLM has a foundational understanding. Respond with ONLY the expanded prompt.
 
-        Original Prompt: ${prompt}`,
+        Original Prompt: ${prompt.substring(0, 2000)}`,
       });
       return response.text || prompt;
     } catch (e) {
@@ -145,7 +151,8 @@ export class PromptEngine {
   static async execute(prompt: string, options: OptimizationOptions = {}): Promise<ExecutionResult> {
     const ai = getAI();
     const optimization = await this.optimize(prompt, options);
-    const model = options.model || 'gemini-3-flash-preview';
+    const requestedModel = options.model || 'gemini-3-flash-preview';
+    const model = ALLOWED_MODELS.includes(requestedModel) ? requestedModel : 'gemini-3-flash-preview';
 
     let responseText = "";
     let alignmentStatus: 'passed' | 'flagged' = 'passed';

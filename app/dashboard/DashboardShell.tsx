@@ -6,7 +6,7 @@ import {
   Terminal,
   BarChart3,
   Settings,
-  CreditCard,
+  Clock,
   LogOut,
   Home as HomeIcon,
   Menu,
@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import Logo from '@/components/Logo';
 
@@ -22,14 +22,15 @@ const menuItems = [
   { icon: HomeIcon, label: 'Home', href: '/' },
   { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
   { icon: Terminal, label: 'Playground', href: '/dashboard/playground' },
+  { icon: Clock, label: 'History', href: '/dashboard/history' },
   { icon: BarChart3, label: 'Analytics', href: '/dashboard/analytics' },
-  { icon: CreditCard, label: 'Billing', href: '/dashboard/billing' },
   { icon: Settings, label: 'Settings', href: '/dashboard/settings' },
 ];
 
 export default function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const router = useRouter();
   const { data: session } = useSession();
 
   const userName = session?.user?.name || session?.user?.email?.split('@')[0] || 'User';
@@ -134,7 +135,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             </motion.button>
             <div>
               <h1 className="text-3xl md:text-4xl font-display font-medium text-ink mb-1 md:mb-2">Welcome back, {userName}</h1>
-              <p className="text-xs md:text-sm text-ink/40 font-body font-light">Your intelligence layer is operating at peak efficiency.</p>
+              <p className="text-xs md:text-sm text-ink/40 font-body font-light">Here&apos;s your usage overview.</p>
             </div>
           </div>
           <div className="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-between md:justify-end">
@@ -154,11 +155,12 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                </span>
              </div>
              <motion.button
+               onClick={() => router.push('/dashboard/playground')}
                whileHover={{ scale: 1.05, boxShadow: '0 10px 30px -10px rgba(255,90,31,0.3)' }}
                whileTap={{ scale: 0.95 }}
                className="bg-ink text-surface px-4 md:px-6 py-2 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all shadow-sm"
              >
-                New Project
+                New Prompt
              </motion.button>
           </div>
         </motion.header>

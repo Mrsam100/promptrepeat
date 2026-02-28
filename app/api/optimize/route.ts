@@ -4,36 +4,53 @@ import { authOptions } from '@/lib/auth';
 import { PromptEngine } from '@/lib/engine';
 import prisma from '@/lib/prisma';
 
+const MAX_PROMPT_LENGTH = 50000;
+
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
 
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const body = await req.json();
+    let body: Record<string, unknown>;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
+
     const { prompt, ...options } = body;
 
-    if (!prompt) {
-      return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+    if (!prompt || typeof prompt !== 'string') {
+      return NextResponse.json({ error: 'Prompt is required and must be a string' }, { status: 400 });
+    }
+
+    if (prompt.length > MAX_PROMPT_LENGTH) {
+      return NextResponse.json(
+        { error: `Prompt too long. Maximum ${MAX_PROMPT_LENGTH.toLocaleString()} characters allowed.` },
+        { status: 400 }
+      );
     }
 
     const result = await PromptEngine.execute(prompt, options);
 
-    // Log usage to database
+    // Log usage to database (non-blocking, never fails the request)
     try {
-      const userId = session.user.id;
-      if (userId) {
-        await prisma.usage.create({
-          data: {
-            userId,
-            promptLength: prompt.length,
-            repetitionMode: result.mode,
-            latencyMs: result.latencyMs,
-          },
-        });
-      }
+      await prisma.usage.create({
+        data: {
+          userId: session.user.id,
+          promptLength: prompt.length,
+          repetitionMode: result.mode,
+          latencyMs: result.latencyMs,
+          promptText: prompt.substring(0, 10000),
+          optimizedText: result.optimizedPrompt?.substring(0, 20000) || null,
+          outputText: result.output?.substring(0, 20000) || null,
+          taskType: result.taskType || null,
+          confidenceScore: result.confidenceScore ?? null,
+        },
+      });
     } catch (logError) {
       console.error('Usage logging error:', logError);
     }
@@ -41,7 +58,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error('Optimization error:', error);
-    const message = error instanceof Error ? error.message : 'Internal Server Error';
-    return NextResponse.json({ error: message }, { status: 500 });
+    return NextResponse.json({ error: 'Optimization failed. Please try again.' }, { status: 500 });
   }
 }

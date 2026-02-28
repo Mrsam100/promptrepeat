@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import prisma from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { sendPasswordResetEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
   try {
@@ -61,11 +62,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // In production, send email via Resend/SendGrid/etc.
-    // For now, log the reset URL (visible in server logs)
     const baseUrl = process.env.NEXTAUTH_URL || "http://localhost:3000";
     const resetUrl = `${baseUrl}/reset-password?token=${token}&email=${encodeURIComponent(normalizedEmail)}`;
-    console.log(`[PASSWORD RESET] Reset link for ${normalizedEmail}: ${resetUrl}`);
+
+    try {
+      await sendPasswordResetEmail(normalizedEmail, resetUrl);
+    } catch (emailError) {
+      console.error("Failed to send reset email:", emailError);
+      // Don't expose email failure to user (security) but log it
+    }
 
     return successResponse;
   } catch (error) {

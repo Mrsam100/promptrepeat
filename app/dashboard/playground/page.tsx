@@ -88,7 +88,7 @@ export default function Playground() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 min-h-[calc(100vh-12rem)] relative z-10">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 min-h-[calc(100vh-12rem)] relative z-10">
       {/* Input Section */}
       <div className="lg:col-span-1 flex flex-col gap-8">
         <div className="p-10 mistral-card shadow-sm flex flex-col flex-grow relative overflow-hidden group">
@@ -126,7 +126,7 @@ export default function Playground() {
                   )}
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  {(['x2', 'x3', 'adaptive', 'selective'] as RepetitionMode[]).map((m) => (
+                  {(['x2', 'x3', 'adaptive', 'selective', 'neural-reasoning'] as RepetitionMode[]).map((m) => (
                     <button
                       key={m}
                       onClick={() => setMode(m)}
@@ -134,9 +134,9 @@ export default function Playground() {
                         mode === m
                           ? 'bg-primary/10 border-primary text-primary shadow-sm'
                           : 'bg-black/5 border-black/5 text-ink/40 hover:border-black/20 hover:text-ink'
-                      }`}
+                      } ${m === 'neural-reasoning' ? 'col-span-2' : ''}`}
                     >
-                      {m}
+                      {m === 'neural-reasoning' ? 'Neural Reasoning' : m}
                     </button>
                   ))}
                 </div>
@@ -165,50 +165,46 @@ export default function Playground() {
               </AnimatePresence>
 
               <div className="space-y-5 pt-6 border-t border-black/5">
+                <label className="text-[10px] font-bold uppercase tracking-[0.3em] text-ink/40 block">Enhancement Layers</label>
                 {[
-                  { id: 'neural-reasoning', icon: BrainCircuit, label: 'Neural Reasoning', desc: 'Recursive logic verification', color: 'text-primary' },
                   { id: 'latent-anchoring', icon: Anchor, label: 'Latent Anchoring', desc: 'Prevent semantic drift', color: 'text-indigo-400' },
                   { id: 'alignment', icon: ShieldCheck, label: 'Alignment Guardrails', desc: 'Safety & truthfulness', color: 'text-accent' },
                   { id: 'intent-expansion', icon: Sparkles, label: 'Intent Expansion', desc: 'Unpack latent goals', color: 'text-retro-yellow' },
                   { id: 'entropy', icon: RefreshCw, label: 'Entropy Monitoring', desc: 'Uncertainty tracking', color: 'text-retro-red' }
-                ].map((feature) => (
-                  <div key={feature.id} className="flex items-center justify-between group/feat relative">
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-lg bg-black/5 border border-black/5 ${feature.color}`}>
-                        <feature.icon size={16} />
+                ].map((feature) => {
+                  const isOn =
+                    (feature.id === 'latent-anchoring' && enableLatentAnchoring) ||
+                    (feature.id === 'alignment' && enableAlignment) ||
+                    (feature.id === 'intent-expansion' && enableIntentExpansion) ||
+                    (feature.id === 'entropy' && enableEntropyMonitoring);
+                  return (
+                    <div key={feature.id} className="flex items-center justify-between group/feat relative">
+                      <div className="flex items-center gap-4">
+                        <div className={`p-2 rounded-lg bg-black/5 border border-black/5 ${feature.color}`}>
+                          <feature.icon size={16} />
+                        </div>
+                        <div className="flex flex-col">
+                          <label className="text-xs font-bold text-ink/80 uppercase tracking-widest">{feature.label}</label>
+                          <p className="text-[10px] text-ink/30 font-body font-light">{feature.desc}</p>
+                        </div>
                       </div>
-                      <div className="flex flex-col">
-                        <label className="text-xs font-bold text-ink/80 uppercase tracking-widest">{feature.label}</label>
-                        <p className="text-[10px] text-ink/30 font-body font-light">{feature.desc}</p>
-                      </div>
+                      <button
+                        role="switch"
+                        aria-checked={isOn}
+                        aria-label={`Toggle ${feature.label}`}
+                        onClick={() => {
+                          if (feature.id === 'latent-anchoring') setEnableLatentAnchoring(!enableLatentAnchoring);
+                          if (feature.id === 'alignment') setEnableAlignment(!enableAlignment);
+                          if (feature.id === 'intent-expansion') setEnableIntentExpansion(!enableIntentExpansion);
+                          if (feature.id === 'entropy') setEnableEntropyMonitoring(!enableEntropyMonitoring);
+                        }}
+                        className={`w-12 h-7 rounded-full transition-all relative ${isOn ? 'bg-primary shadow-sm' : 'bg-black/10'}`}
+                      >
+                        <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${isOn ? 'left-6 shadow-sm' : 'left-1'}`}></div>
+                      </button>
                     </div>
-                    {(() => {
-                      const isOn =
-                        (feature.id === 'neural-reasoning' && mode === 'neural-reasoning') ||
-                        (feature.id === 'latent-anchoring' && enableLatentAnchoring) ||
-                        (feature.id === 'alignment' && enableAlignment) ||
-                        (feature.id === 'intent-expansion' && enableIntentExpansion) ||
-                        (feature.id === 'entropy' && enableEntropyMonitoring);
-                      return (
-                        <button
-                          role="switch"
-                          aria-checked={isOn}
-                          aria-label={`Toggle ${feature.label}`}
-                          onClick={() => {
-                            if (feature.id === 'neural-reasoning') setMode(mode === 'neural-reasoning' ? 'adaptive' : 'neural-reasoning');
-                            if (feature.id === 'latent-anchoring') setEnableLatentAnchoring(!enableLatentAnchoring);
-                            if (feature.id === 'alignment') setEnableAlignment(!enableAlignment);
-                            if (feature.id === 'intent-expansion') setEnableIntentExpansion(!enableIntentExpansion);
-                            if (feature.id === 'entropy') setEnableEntropyMonitoring(!enableEntropyMonitoring);
-                          }}
-                          className={`w-12 h-7 rounded-full transition-all relative ${isOn ? 'bg-primary shadow-sm' : 'bg-black/10'}`}
-                        >
-                          <div className={`absolute top-1 w-5 h-5 rounded-full bg-white transition-all ${isOn ? 'left-6 shadow-sm' : 'left-1'}`}></div>
-                        </button>
-                      );
-                    })()}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               <div className="pt-6 border-t border-black/5">

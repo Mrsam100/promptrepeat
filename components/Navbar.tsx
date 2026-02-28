@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Logo from '@/components/Logo';
 import { Menu, X } from 'lucide-react';
 
@@ -13,6 +14,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -61,9 +63,9 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + i * 0.1 }}
             >
-              <Link href={link.href} className="relative text-xs font-bold uppercase tracking-widest text-ink/60 hover:text-primary transition-colors group py-2">
+              <Link href={link.href} className={`relative text-xs font-bold uppercase tracking-widest transition-colors group py-2 ${pathname === link.href ? 'text-primary' : 'text-ink/60 hover:text-primary'}`}>
                 {link.label}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary rounded-full transition-all duration-300 group-hover:w-full" />
+                <span className={`absolute bottom-0 left-0 h-0.5 bg-primary rounded-full transition-all duration-300 ${pathname === link.href ? 'w-full' : 'w-0 group-hover:w-full'}`} />
               </Link>
             </motion.div>
           ))}
@@ -94,7 +96,7 @@ export default function Navbar() {
         {/* Mobile hamburger with icon rotation */}
         <motion.button
           onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 rounded-xl hover:bg-black/5 transition-colors"
+          className="md:hidden p-3 rounded-xl hover:bg-black/5 transition-colors"
           aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           whileTap={{ scale: 0.9 }}
         >
@@ -133,7 +135,7 @@ export default function Navbar() {
                   <Link
                     href={link.href}
                     onClick={() => setMobileOpen(false)}
-                    className="block text-sm font-bold uppercase tracking-widest text-ink/60 hover:text-primary transition-all py-3 hover:pl-2 duration-200"
+                    className={`block text-sm font-bold uppercase tracking-widest transition-all py-3 hover:pl-2 duration-200 ${pathname === link.href ? 'text-primary pl-2' : 'text-ink/60 hover:text-primary'}`}
                   >
                     {link.label}
                   </Link>
@@ -148,7 +150,7 @@ export default function Navbar() {
                 <Link
                   href="/login"
                   onClick={() => setMobileOpen(false)}
-                  className="block text-sm font-bold uppercase tracking-widest text-ink/60 hover:text-ink transition-colors py-2"
+                  className="block text-sm font-bold uppercase tracking-widest text-ink/60 hover:text-ink transition-colors py-3"
                 >
                   Sign In
                 </Link>

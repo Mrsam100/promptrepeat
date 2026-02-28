@@ -48,7 +48,7 @@ export default function Pricing() {
           <p className="text-ink/40 max-w-2xl mx-auto">Choose the plan that fits your scale. No hidden fees.</p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}

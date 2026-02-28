@@ -88,21 +88,21 @@ export default function Settings() {
   return (
     <div className="max-w-4xl space-y-12 pb-20">
       {/* Profile Header */}
-      <div className="flex items-center gap-8 p-10 mistral-card border border-black/5 shadow-sm relative overflow-hidden group">
-        <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary text-3xl font-display font-medium border border-primary/20 relative z-10 shadow-sm overflow-hidden">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 p-6 sm:p-10 mistral-card border border-black/5 shadow-sm relative overflow-hidden group">
+        <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xl sm:text-3xl font-display font-medium border border-primary/20 relative z-10 shadow-sm overflow-hidden shrink-0">
           {session?.user?.image ? (
             <Image src={session.user.image} alt={`${userName}'s avatar`} width={96} height={96} className="w-full h-full object-cover" />
           ) : (
             initials
           )}
         </div>
-        <div className="relative z-10">
-          <h2 className="text-3xl font-display font-medium text-ink mb-2">{userName}</h2>
-          <p className="text-sm text-ink/40 font-body font-light">{userEmail}</p>
+        <div className="relative z-10 flex-grow min-w-0">
+          <h2 className="text-xl sm:text-3xl font-display font-medium text-ink mb-1 sm:mb-2 truncate">{userName}</h2>
+          <p className="text-xs sm:text-sm text-ink/40 font-body font-light truncate">{userEmail}</p>
         </div>
         <button
           onClick={handleEditProfile}
-          className="ml-auto px-8 py-3 rounded-xl border border-black/5 bg-white/50 text-xs font-bold uppercase tracking-widest text-ink/60 hover:bg-black/5 transition-all relative z-10"
+          className="sm:ml-auto px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl border border-black/5 bg-white/50 text-xs font-bold uppercase tracking-widest text-ink/60 hover:bg-black/5 transition-all relative z-10 w-full sm:w-auto text-center"
         >
           {activePanel === 'profile' ? 'Close' : 'Edit Profile'}
         </button>

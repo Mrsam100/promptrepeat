@@ -15,33 +15,33 @@ const docSections = [
   },
   {
     title: "API Reference",
-    desc: "Detailed documentation for our REST and WebSocket APIs.",
+    desc: "Detailed documentation for our REST API.",
     icon: <Code className="w-6 h-6" />,
-    href: "#api-reference"
+    href: "#quick-start"
   },
   {
     title: "Optimization Modes",
     desc: "Learn about x2, x3, Adaptive, and Neural Reasoning modes.",
     icon: <Cpu className="w-6 h-6" />,
-    href: "#optimization-modes"
+    href: "#quick-start"
   },
   {
     title: "SDKs & Libraries",
-    desc: "Official libraries for Python, Node.js, and Go.",
+    desc: "TypeScript SDK for prompt optimization.",
     icon: <Terminal className="w-6 h-6" />,
-    href: "#sdks"
+    href: "#quick-start"
   },
   {
     title: "Best Practices",
     desc: "Strategies for maximizing accuracy while minimizing costs.",
     icon: <Book className="w-6 h-6" />,
-    href: "#best-practices"
+    href: "#quick-start"
   },
   {
     title: "Security & Compliance",
-    desc: "Overview of our data handling and SOC2 protocols.",
+    desc: "Overview of our data handling and security practices.",
     icon: <Shield className="w-6 h-6" />,
-    href: "#security"
+    href: "#quick-start"
   }
 ];
 
@@ -73,7 +73,7 @@ export default function DocsPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              className="text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
+              className="text-4xl sm:text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
             >
               Developer <span className="text-primary">Portal.</span>
             </motion.h1>
@@ -150,13 +150,11 @@ export default function DocsPage() {
                   </div>
                 </div>
                 <div className="shrink-0 w-full md:w-auto">
-                  <motion.button
-                    whileHover={{ scale: 1.05, boxShadow: '0 10px 40px -10px rgba(26,26,26,0.3)' }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full md:w-auto bg-ink text-surface px-10 py-4 rounded-xl font-bold hover:bg-primary transition-all"
-                  >
-                    View Full API Docs
-                  </motion.button>
+                  <motion.div whileHover={{ scale: 1.05, boxShadow: '0 10px 40px -10px rgba(26,26,26,0.3)' }} whileTap={{ scale: 0.95 }}>
+                    <a href="/dashboard/playground" className="block w-full md:w-auto bg-ink text-surface px-10 py-4 rounded-xl font-bold hover:bg-primary transition-all text-center">
+                      Try the Playground
+                    </a>
+                  </motion.div>
                 </div>
               </div>
             </div>

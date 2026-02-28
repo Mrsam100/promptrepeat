@@ -8,11 +8,10 @@ import {
   Settings,
   Clock,
   LogOut,
-  Home as HomeIcon,
   Menu,
   X
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -20,7 +19,6 @@ import { useSession, signOut } from 'next-auth/react';
 import Logo from '@/components/Logo';
 
 const menuItems = [
-  { icon: HomeIcon, label: 'Home', href: '/' },
   { icon: LayoutDashboard, label: 'Overview', href: '/dashboard' },
   { icon: Terminal, label: 'Playground', href: '/dashboard/playground' },
   { icon: Clock, label: 'History', href: '/dashboard/history' },
@@ -36,6 +34,26 @@ export default function DashboardShell({ children }: { children: React.ReactNode
 
   const userName = session?.user?.name || session?.user?.email?.split('@')[0] || 'User';
   const userInitials = userName.slice(0, 2).toUpperCase();
+
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    if (isSidebarOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isSidebarOpen]);
+
+  // Context-aware page title
+  const pageContext = (() => {
+    if (pathname === '/dashboard') return "Here's your usage overview.";
+    if (pathname === '/dashboard/playground') return 'Optimize and test your prompts.';
+    if (pathname === '/dashboard/history') return 'Browse your past optimizations.';
+    if (pathname === '/dashboard/analytics') return 'Insights into your usage patterns.';
+    if (pathname === '/dashboard/settings') return 'Manage your account and preferences.';
+    return "Here's your usage overview.";
+  })();
 
   return (
     <div className="min-h-screen bg-surface flex relative overflow-hidden">
@@ -136,7 +154,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
             </motion.button>
             <div>
               <h1 className="text-3xl md:text-4xl font-display font-medium text-ink mb-1 md:mb-2">Welcome back, {userName}</h1>
-              <p className="text-xs md:text-sm text-ink/40 font-body font-light">Here&apos;s your usage overview.</p>
+              <p className="text-xs md:text-sm text-ink/40 font-body font-light">{pageContext}</p>
             </div>
           </div>
           <div className="flex items-center gap-4 md:gap-6 w-full md:w-auto justify-between md:justify-end">

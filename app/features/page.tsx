@@ -122,7 +122,7 @@ export default function FeaturesPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.6 }}
-              className="text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
+              className="text-4xl sm:text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
             >
               Powerful <span className="text-primary">Intelligence.</span>
             </motion.h1>

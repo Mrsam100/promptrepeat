@@ -122,7 +122,7 @@ export default function Home() {
                 Recursive Intelligence Layer
               </motion.div>
               
-              <h1 className="hero-title text-7xl md:text-[120px] mb-12 leading-[0.85] tracking-tighter font-display font-medium text-ink">
+              <h1 className="hero-title text-5xl sm:text-7xl md:text-[120px] mb-8 sm:mb-12 leading-[0.85] tracking-tighter font-display font-medium text-ink">
                 Repeat <br />
                 <span className="text-primary">to Align.</span>
               </h1>
@@ -183,7 +183,7 @@ export default function Home() {
 
       {/* Stats Section */}
       <section className="reveal-section py-24 px-6 border-y border-black/5 bg-black/5 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-12 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-12 relative z-10">
           {[
             { label: 'Accuracy Uplift', value: '30%', sub: 'Average increase', color: 'text-primary' },
             { label: 'Latency', value: '0ms', sub: 'Prefill processing', color: 'text-accent' },
@@ -399,10 +399,10 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 shrink-0">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
               {[Zap, Globe, Shield, Cpu].map((Icon, i) => (
-                <div key={i} className="w-32 h-32 rounded-3xl bg-black/5 border border-black/5 flex items-center justify-center">
-                  <Icon size={40} className="text-primary" />
+                <div key={i} className="w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl sm:rounded-3xl bg-black/5 border border-black/5 flex items-center justify-center">
+                  <Icon size={32} className="text-primary sm:w-10 sm:h-10" />
                 </div>
               ))}
             </div>
@@ -415,7 +415,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-24">
             <span className="text-retro-red text-[10px] font-bold tracking-[0.2em] uppercase mb-6 block">The Benchmark</span>
-            <h2 className="text-5xl md:text-7xl mb-8 leading-tight text-ink font-medium">Instruction Drift <br />is a Solved Problem.</h2>
+            <h2 className="text-3xl sm:text-5xl md:text-7xl mb-8 leading-tight text-ink font-medium">Instruction Drift <br />is a Solved Problem.</h2>
             <p className="text-lg text-ink/60 max-w-2xl mx-auto font-body font-light leading-relaxed">
               Standard prompts lose 40% of their instructional weight after 200 tokens. PromptRepeat maintains 99.2% alignment through recursive anchoring.
             </p>
@@ -662,7 +662,7 @@ export default function Home() {
       <section className="reveal-section py-32 px-6 bg-black/5 relative overflow-hidden">
         <div className="max-w-7xl mx-auto text-center relative z-10">
           <span className="text-accent text-[10px] font-bold tracking-[0.2em] uppercase mb-6 block">Infrastructure</span>
-          <h2 className="text-5xl md:text-7xl mb-8 leading-tight text-ink font-medium">Global Edge <br />Optimization.</h2>
+          <h2 className="text-3xl sm:text-5xl md:text-7xl mb-8 leading-tight text-ink font-medium">Global Edge <br />Optimization.</h2>
           <p className="text-lg text-ink/60 max-w-2xl mx-auto mb-20 font-body font-light leading-relaxed">
             Our optimization layer runs on a globally distributed edge network, ensuring sub-millisecond processing regardless of your user&apos;s location.
           </p>

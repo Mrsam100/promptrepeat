@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import Pricing from '@/components/Pricing';
 import { motion } from 'motion/react';
 import ScrollReveal from '@/components/ScrollReveal';
+import Link from 'next/link';
 
 export default function PricingPage() {
   return (
@@ -28,7 +29,7 @@ export default function PricingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.6 }}
-            className="text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
+            className="text-4xl sm:text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
           >
             Scale with <span className="text-accent">Confidence.</span>
           </motion.h1>
@@ -59,13 +60,11 @@ export default function PricingPage() {
               />
               <h2 className="text-4xl font-display font-medium mb-6 relative z-10">Need a custom solution?</h2>
               <p className="text-surface/60 mb-10 relative z-10">We offer tailored enterprise packages with dedicated support, custom SLAs, and on-premise deployment options.</p>
-              <motion.button
-                whileHover={{ scale: 1.05, boxShadow: '0 10px 40px -10px rgba(255,90,31,0.4)' }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-surface text-ink px-10 py-4 rounded-xl font-bold hover:bg-primary hover:text-white transition-all relative z-10"
-              >
-                Contact Sales
-              </motion.button>
+              <motion.div whileHover={{ scale: 1.05, boxShadow: '0 10px 40px -10px rgba(255,90,31,0.4)' }} whileTap={{ scale: 0.95 }} className="relative z-10">
+                <Link href="/contact" className="inline-block bg-surface text-ink px-10 py-4 rounded-xl font-bold hover:bg-primary hover:text-white transition-all">
+                  Contact Sales
+                </Link>
+              </motion.div>
             </motion.div>
           </div>
         </div>

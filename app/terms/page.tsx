@@ -34,7 +34,7 @@ export default function TermsPage() {
                 <p>PromptRepeat is provided &quot;as is&quot;. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform.</p>
               </section>
             </div>
-            <p className="mt-20 text-xs text-ink/30 uppercase tracking-widest font-bold">Last Updated: February 2024</p>
+            <p className="mt-20 text-xs text-ink/30 uppercase tracking-widest font-bold">Last Updated: February 2026</p>
           </motion.div>
         </div>
       </div>

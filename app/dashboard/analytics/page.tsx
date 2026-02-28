@@ -194,12 +194,12 @@ export default function Analytics() {
       </div>
 
       {/* Main Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 relative z-10">
         {/* Performance Overview */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-2 p-10 mistral-card border border-black/5 shadow-sm relative overflow-hidden"
+          className="lg:col-span-2 p-5 sm:p-8 md:p-10 mistral-card border border-black/5 shadow-sm relative overflow-hidden"
         >
           <div className="flex items-center justify-between mb-10 relative z-10">
             <div>
@@ -207,7 +207,7 @@ export default function Analytics() {
               <p className="text-sm text-ink/40 font-body font-light">Daily prompt optimizations</p>
             </div>
           </div>
-          <div className="h-80 w-full relative z-10">
+          <div className="h-48 sm:h-64 md:h-80 w-full relative z-10">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data.timeSeriesData}>
                 <defs>
@@ -237,7 +237,7 @@ export default function Analytics() {
           className="lg:col-span-1 p-10 mistral-card border border-black/5 shadow-sm relative overflow-hidden"
         >
           <h3 className="text-2xl font-display font-medium text-ink mb-10 relative z-10">Mode Distribution</h3>
-          <div className="h-64 w-full relative z-10">
+          <div className="h-40 sm:h-52 md:h-64 w-full relative z-10">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -288,7 +288,7 @@ export default function Analytics() {
               <Clock size={20} />
             </div>
           </div>
-          <div className="h-64 w-full relative z-10">
+          <div className="h-40 sm:h-52 md:h-64 w-full relative z-10">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.timeSeriesData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />
@@ -317,7 +317,7 @@ export default function Analytics() {
               <TrendingUp size={20} />
             </div>
           </div>
-          <div className="h-64 w-full relative z-10">
+          <div className="h-40 sm:h-52 md:h-64 w-full relative z-10">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.timeSeriesData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(0,0,0,0.05)" />

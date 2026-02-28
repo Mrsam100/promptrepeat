@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${dmSans.variable} ${manrope.variable}`}>
-      <body className="antialiased bg-surface text-white font-body selection:bg-primary/20 selection:text-primary overflow-x-hidden">
+      <body className="antialiased bg-surface text-ink font-body selection:bg-primary/20 selection:text-primary overflow-x-hidden">
         <SessionProvider>
           <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.02] noise-bg"></div>
           <div className="relative z-0">

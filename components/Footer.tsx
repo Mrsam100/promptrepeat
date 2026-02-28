@@ -133,16 +133,20 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-10 pt-12 border-t border-black/5">
             <p className="text-sm text-ink/30 font-medium">&copy; {new Date().getFullYear()} PromptRepeat. All rights reserved.</p>
             <div className="flex gap-10 text-sm text-ink/30 font-bold uppercase tracking-widest">
-              {['Twitter', 'GitHub', 'LinkedIn'].map((social) => (
+              {[
+                { label: 'GitHub', href: 'https://github.com/Mrsam100/promptrepeat' },
+                { label: 'Twitter', href: '#' },
+                { label: 'LinkedIn', href: '#' },
+              ].map((social) => (
                 <motion.a
-                  key={social}
-                  href={`https://${social.toLowerCase()}.com`}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  key={social.label}
+                  href={social.href}
+                  target={social.href !== '#' ? '_blank' : undefined}
+                  rel={social.href !== '#' ? 'noopener noreferrer' : undefined}
                   className="hover:text-ink transition-colors relative group"
                   whileHover={{ y: -2 }}
                 >
-                  {social}
+                  {social.label}
                   <span className="absolute -bottom-1 left-0 w-0 h-px bg-ink transition-all duration-300 group-hover:w-full" />
                 </motion.a>
               ))}

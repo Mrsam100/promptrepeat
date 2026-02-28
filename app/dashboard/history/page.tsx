@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'motion/react';
 import { useState, useEffect, useCallback } from 'react';
-import { Clock, ChevronDown, ChevronLeft, ChevronRight, Zap, Copy, Check, AlertCircle, Loader2 } from 'lucide-react';
+import { Clock, ChevronDown, ChevronLeft, ChevronRight, Copy, Check, AlertCircle, Loader2 } from 'lucide-react';
 import { timeAgo } from '@/lib/utils';
 import Link from 'next/link';
 
@@ -207,7 +207,7 @@ export default function History() {
                           <p className="text-[10px] font-bold uppercase tracking-widest text-ink/40">Original Prompt</p>
                           <button
                             onClick={() => copyToClipboard(item.promptText!, `prompt-${item.id}`)}
-                            className="text-ink/30 hover:text-primary transition-colors"
+                            className="p-2 rounded-lg text-ink/30 hover:text-primary hover:bg-black/5 transition-colors"
                           >
                             {copiedId === `prompt-${item.id}` ? <Check size={14} /> : <Copy size={14} />}
                           </button>
@@ -225,7 +225,7 @@ export default function History() {
                           <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Optimized Prompt</p>
                           <button
                             onClick={() => copyToClipboard(item.optimizedText!, `opt-${item.id}`)}
-                            className="text-ink/30 hover:text-primary transition-colors"
+                            className="p-2 rounded-lg text-ink/30 hover:text-primary hover:bg-black/5 transition-colors"
                           >
                             {copiedId === `opt-${item.id}` ? <Check size={14} /> : <Copy size={14} />}
                           </button>
@@ -243,7 +243,7 @@ export default function History() {
                           <p className="text-[10px] font-bold uppercase tracking-widest text-accent">Model Output</p>
                           <button
                             onClick={() => copyToClipboard(item.outputText!, `out-${item.id}`)}
-                            className="text-ink/30 hover:text-primary transition-colors"
+                            className="p-2 rounded-lg text-ink/30 hover:text-primary hover:bg-black/5 transition-colors"
                           >
                             {copiedId === `out-${item.id}` ? <Check size={14} /> : <Copy size={14} />}
                           </button>

@@ -12,6 +12,7 @@ export default function ContactPage() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    if (status === 'error') setStatus('idle');
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
@@ -75,7 +76,7 @@ export default function ContactPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1, duration: 0.6 }}
-                className="text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
+                className="text-4xl sm:text-6xl md:text-8xl font-display font-medium text-ink mb-8 tracking-tight"
               >
                 Let&apos;s <span className="text-primary">Connect.</span>
               </motion.h1>

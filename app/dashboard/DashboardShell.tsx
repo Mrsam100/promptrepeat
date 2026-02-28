@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import Logo from '@/components/Logo';
@@ -145,7 +146,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
                  className="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-surface bg-primary/10 flex items-center justify-center shadow-sm text-primary text-xs font-bold"
                >
                  {session?.user?.image ? (
-                   <img src={session.user.image} alt={`${userName}'s avatar`} className="w-full h-full rounded-full object-cover" />
+                   <Image src={session.user.image} alt={`${userName}'s avatar`} width={40} height={40} className="w-full h-full rounded-full object-cover" />
                  ) : (
                    userInitials
                  )}

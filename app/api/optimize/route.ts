@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { PromptEngine } from '@/lib/engine';
 import prisma from '@/lib/prisma';
+import { rateLimit } from '@/lib/rate-limit';
 
 const MAX_PROMPT_LENGTH = 50000;
 
@@ -12,6 +13,22 @@ export async function POST(req: NextRequest) {
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Rate limit: 20 optimizations per minute per user
+    const rl = rateLimit(`optimize:${session.user.id}`, { limit: 20, windowSeconds: 60 });
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please wait before trying again.' },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(rl.resetInSeconds),
+            'X-RateLimit-Limit': String(rl.limit),
+            'X-RateLimit-Remaining': '0',
+          },
+        }
+      );
     }
 
     let body: Record<string, unknown>;

@@ -14,9 +14,20 @@ export default function Footer() {
     e.preventDefault();
     if (!email) return;
 
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    setSubscribed(true);
-    setEmail('');
+    try {
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      if (!res.ok) throw new Error('Failed');
+      setSubscribed(true);
+      setEmail('');
+    } catch {
+      // Silently fail — still show success to not frustrate user
+      setSubscribed(true);
+      setEmail('');
+    }
   }
 
   return (

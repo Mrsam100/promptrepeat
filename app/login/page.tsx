@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Lock, ArrowRight, Github, User, Sparkles } from 'lucide-react';
+import Link from 'next/link';
 import Logo from '@/components/Logo';
 
 export default function Login() {
@@ -223,6 +224,11 @@ export default function Login() {
                 className="w-full pl-12 pr-4 py-4 rounded-xl bg-black/5 border border-black/5 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/20 focus:bg-white transition-all font-body text-sm text-ink placeholder:text-ink/20"
               />
             </div>
+            {!isSignUp && (
+              <Link href="/reset-password" className="text-xs text-primary/70 hover:text-primary font-medium transition-colors">
+                Forgot password?
+              </Link>
+            )}
           </motion.div>
 
           <motion.button

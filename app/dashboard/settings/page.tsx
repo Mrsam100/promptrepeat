@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { motion, AnimatePresence } from 'motion/react';
+import Image from 'next/image';
 import {
   User,
   ChevronRight,
@@ -90,7 +91,7 @@ export default function Settings() {
       <div className="flex items-center gap-8 p-10 mistral-card border border-black/5 shadow-sm relative overflow-hidden group">
         <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary text-3xl font-display font-medium border border-primary/20 relative z-10 shadow-sm overflow-hidden">
           {session?.user?.image ? (
-            <img src={session.user.image} alt={`${userName}'s avatar`} className="w-full h-full object-cover" />
+            <Image src={session.user.image} alt={`${userName}'s avatar`} width={96} height={96} className="w-full h-full object-cover" />
           ) : (
             initials
           )}

@@ -23,18 +23,18 @@ export default function PrivacyPage() {
               </section>
               <section>
                 <h2 className="text-2xl font-display font-medium text-ink mb-4">2. Prompt Data</h2>
-                <p>PromptRepeat does not store the content of your prompts or model outputs unless explicitly requested for debugging purposes. All data is processed in-memory and encrypted in transit.</p>
+                <p>PromptRepeat stores your prompts, optimized outputs, and model responses to provide features such as prompt history, analytics, and dashboard insights. Prompt text is truncated at 10,000 characters and outputs at 20,000 characters. All data is encrypted in transit via TLS. You can permanently delete all of your stored data at any time by deleting your account from the Settings page.</p>
               </section>
               <section>
                 <h2 className="text-2xl font-display font-medium text-ink mb-4">3. Security</h2>
-                <p>We implement enterprise-grade security protocols, including end-to-end encryption and regular SOC2 compliance audits.</p>
+                <p>We implement industry-standard security practices including encrypted connections (TLS), hashed passwords (bcrypt), and JWT-based authentication. Your data is stored in a secure PostgreSQL database with access restricted to authenticated sessions.</p>
               </section>
               <section>
                 <h2 className="text-2xl font-display font-medium text-ink mb-4">4. Third Parties</h2>
                 <p>We do not sell your data. We only share data with third-party LLM providers as required to execute your requests.</p>
               </section>
             </div>
-            <p className="mt-20 text-xs text-ink/30 uppercase tracking-widest font-bold">Last Updated: February 2024</p>
+            <p className="mt-20 text-xs text-ink/30 uppercase tracking-widest font-bold">Last Updated: February 2026</p>
           </motion.div>
         </div>
       </div>
